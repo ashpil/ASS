@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>Hello!</title>
+        <style>
+            body {
+                font-family: arial;
+                margin: 0;
+                color: #141414;
+            }
+            #nav {
+                padding: 0rem 5rem;
+                height: 5rem;
+                box-shadow: -1px 2px 5px 0px rgba(0,0,0,0.42);
+                margin-bottom: 2rem;
+            }
+
+            #name {
+                font-size: 30px;
+                line-height: 5rem;
+            }
+
+            #links {
+                float: right;
+                padding: 0;
+                margin: 0;
+            }
+
+            #links li {
+                display: inline;
+            }
+            
+            #links li a {
+                font-weight: bold;
+                padding: 0.5rem;
+                border-radius: 4px;
+                text-decoration: none;
+                line-height: 5rem;
+                color: #141414;
+            }
+
+            #main {
+                margin: 0 auto;
+                max-width: 70rem;
+                width: 100%;
+            }
+
+            .post {
+                margin: 0.5rem 0;
+                display: grid;
+                grid-template-columns: 2rem auto;
+            }
+            .post .votes {
+                place-self: center;
+                color: orange;
+            }
+            .post .title {
+                text-decoration: none;
+            }
+            .post * {
+                margin-bottom: 0.25rem;
+            }
+
+            .tag {
+                border-radius: 0.5rem;
+                border: 1px solid grey;
+                padding: 0.25rem;
+            }
+
+            .red_tag {
+                background-color: red;
+                border-color: crimson;
+                color: maroon;
+            }
+            .blue_tag {
+                background-color: dodgerblue;
+                border-color: blue;
+                color: darkslateblue;
+            }
+            .orange_tag {
+                background-color: orange;
+                border-color: coral;
+                color: chocolate;
+            }
+            .line2 {
+                color: grey;
+            }
+
+            #footer {
+                padding: 0rem 5rem;
+            }
+
+            #footer p {
+                display: inline;
+                float: right;
+                margin-left: 0.5rem;
+            }
+
+            #footer a {
+                text-decoration: none;
+                margin-right: 0.5rem;
+            }
+
+            @media only screen and (max-width: 700px) {
+                #nav {
+                    height: 10rem;
+                    text-align: center;
+                }
+
+                #links {
+                    float: none;
+                }
+
+                #footer p {
+                    float: none;
+                }
+
+                #footer {
+                    text-align: center;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="nav">
+            <span id="name">My Forum!</span>
+            <ul id="links">
+                <li><a href="/">Main</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/profile">Profile</a></li>
+            </ul>
+        </div>
+        <div id="main">
+            <div class="post">
+                <span class="votes">15</span>
+                <span class="info">
+                    <div class="line1">
+                        <a class="title" href="mysite.com">How I Learned to Stop Worrying and Love HTML</a>
+                        <span class="tag red_tag">Article</span>
+                        <span class="tag blue_tag">Advice</span>
+                    </div>
+                    <div class="line2">
+                        <span class="author">posted by <a class="user" href="/sad_man">sad_man</a> 6 days ago</span>
+                        <span class="comment_num">12 comments</span>
+                    </div>
+                </span>
+            </div>
+            <div class="post">
+                <span class="votes">6</span>
+                <span class="info">
+                    <div class="line1">
+                        <a class="title" href="csstricks.com">Turns out you can actually center things in CSS!</a>
+                        <span class="tag blue_tag">Advice</span>
+                        <span class="tag orange_tag">TIL</span>
+                    </div>
+                    <div class="line2">
+                        <span class="author">posted by <a class="user" href="/sad_man">someone</a> 2 days ago</span>
+                        <span class="comment_num">1 comment</span>
+                    </div>
+                </span>
+            </div>
+        </div>
+        <div id="footer">
+            <a href="instagram.com">
+                <img src="instagram.svg" />
+                Our Instagram!
+            </a>
+            <p>Copyright 2020</p>
+        </div>
+    </body>
+</html>
