@@ -1,51 +1,46 @@
+implicit = font_family["arial"] text_color[#141414]
+nav = shadow[1px bottom] margin_bottom[2rem]
+page = bold padding[.5rem]
+post = margin_vert[.5rem]
+votes = text_color["orange"]
+title[href] = a[href]
+tag[color] = rounded border[1px solid color] text_color[darken(color, 20%)] bg_color[lighten(color, 20%)]
+line2 = text_color["grey"]
+user[href] = a[href]
+
+content require {
+    width <= 90rem
+    hcenter = $window.hcenter
+} prefer {
+    width = 90rem
+    height = 5rem
+}
+
+name prefer {
+    vcenter = $parent.vcenter
+    font_size = 30px
+}
+
+right prefer {
+    vcenter = $parent.vcenter
+    right = $parent.right
+}
+
+main require {
+    width <= 70rem
+    center = $window.center
+} prefer {
+    width = 70rem
+}
+
+votes require {
+    height = $parent.height
+    width = $content.width
+}
+
 <html>
     <head>
         <title>Hello!</title>
-        <style>
-            bundle implicit do: font_family["arial"] text_color[#141414]
-            bundle nav do: shadow[1px bottom] margin_bottom[2rem]
-            bundle page do: bold padding[.5rem]
-            bundle post do: margin_vert[.5rem]
-            bundle votes do: text_color["orange"]
-            bundle title[href] do: a[href]
-            bundle tag[color] do:
-                rounded border[1px solid color]
-                text_color[darken(color, 20%)]
-                background_color[lighten(color, 20%)]
-            end
-            bundle line2 do: text_color["grey"]
-            bundle user[href], do: a[href]
-
-            content require {
-                width <= 90rem
-                hcenter = $window.hcenter
-            } prefer {
-                width = 90rem
-                height = 5rem
-            }
-
-            name prefer {
-                vcenter = $parent.vcenter
-                font_size = 30px
-            }
-
-            right prefer {
-                vcenter = $parent.vcenter
-                right = $parent.right
-            }
-
-            main require {
-                width <= 70rem
-                center = $window.center
-            } prefer {
-                width = 70rem
-            }
-
-            votes require {
-                height = $parent.height
-                width = $content.width
-            }
-        </style>
     </head>
     <body>
         <nav content>

@@ -37,11 +37,38 @@ The content tree is a recursive block structure. Each pair of opening-closing ta
 
 ## Trait Bundles
 ```ass
-bundle par, do: text_color["black"] font_size[16px] justify no_wrap
-bundle tag[color], do: background[color] border_color[darken(color, 10%)] inline
+par = text_color["black"] font_size[16px] justify no_wrap
+tag[color] = bg_color[color] border_color[darken(color, 10%)]
 ```
 
 If you have a lot of blocks that need the `text_color["black"] font_size[16px] justify no_wrap` traits, writing them out every time might start feeling repatative.
 
 Worry not! You can bundle them together so that one small word means all of that.
+
+Trait bundles are typically used to specify properties that are irrelevant to the positioning of an element - such as color or roundedness.
+
+## Constraints 
+
+```ass
+body require {
+    width <= 80rem
+    hcenter = $window.center
+} prefer {
+    width = 80rem
+}
+
+title require {
+    hcenter = $window.center
+    top = $parent.top + 1rem
+}
+```
+
+And finally, constraints! Using them you can define a responsive layout that eliminates the edge cases and always looks good!
+
+The above code ensures the `body` always has a width less than 80rem, and if possible, just keeps it at 80 rem. 
+It also makes sure the center of the body is the center of the window.
+This means that on small screens the body will fill up the entire screen, and on super large screens, it won't get bigger than 80 rem. Neat!
+
+The `title` part ensures titles are always centered in the window, and that the top of a title is `1rem` below the top of the parent container. 
+Special variables, such as `$parent` or `$window` are designated by `$`.
 
