@@ -1,93 +1,95 @@
-implicit = font_family["arial"] text_color[#141414]
-nav = shadow[1px bottom] margin_bottom[2rem]
-page = bold padding[.5rem]
-post = margin_vert[.5rem]
-votes = text_color["orange"]
-title[href] = a[href]
-tag[color] = rounded border[1px solid color] text_color[darken(color, 20%)] bg_color[lighten(color, 20%)]
-line2 = text_color["grey"]
-user[href] = a[href]
+<style>
+  implicit = font_family(arial) text_color(#141414)
+  nav = shadow(1px bottom) margin_bottom(2rem)
+  page = bold padding(.5rem)
+  post = margin_vert(.5rem)
+  votes = text_color(orange)
+  title(href) = a(href)
+  tag(color) = rounded border(1px solid color) text_color(color - 20%) bg_color(color + 20%)
+  line2 = text_color(grey)
+  user(href) = a(href)
 
-content require {
-    width <= 90rem
-    hcenter = $window.hcenter
-} prefer {
-    width = 90rem
-    height = 5rem
-}
+  content require {
+      width <= 90rem
+      hcenter = $window[hcenter]
+  } prefer {
+      width = 90rem
+      height = 5rem
+  }
 
-name prefer {
-    vcenter = $parent.vcenter
-    font_size = 30px
-}
+  name prefer {
+      vcenter = $parent[vcenter]
+      font_size = 30px
+  }
 
-right prefer {
-    vcenter = $parent.vcenter
-    right = $parent.right
-}
+  right prefer {
+      vcenter = $parent[vcenter]
+      right = $parent[right]
+  }
 
-main require {
-    width <= 70rem
-    center = $window.center
-} prefer {
-    width = 70rem
-}
+  main require {
+      width <= 70rem
+      center = $window[center]
+  } prefer {
+      width = 70rem
+  }
 
-votes require {
-    height = $parent.height
-    width = $content.width
-}
+  votes require {
+      height = $parent[height]
+      width = $content[width]
+  }
+</style>
 
 <html>
-    <head>
-        <title>Hello!</title>
-    </head>
-    <body>
-        <nav content>
-            <name>My Forum!</name>
-            <right>
-                <page["/"]>Main</page>
-                <page["/about"]>About</page>
-                <page["/contact"]>Contact</page>
-                <page["/profile"]>Profile</page>
-            </right>
-        </nav>
-        <main>
-            <post>
-                <votes>15</votes>
-                <info>
-                    <line1>
-                        <title["mysite.com"]>How I Learned to Stop Worrying and Love HTML</title>
-                        <tag["red"]>Article</tag>
-                        <tag["blue"]>Advice</tag>
-                    </line1>
-                    <line2>
-                        <author>posted by <user["/sad_man"]>sad_man</user> 2 days ago</author>
-                        <comment_num>12 comments</comment_num>
-                    </line2>
-                </info>
-            </post>
-            <post>
-                <votes>6</votes>
-                <info>
-                    <line1>
-                        <title["csstricks.com"]>Turns out you can actually center things in CSS!</title>
-                        <tag["blue"]>Advice</tag>
-                        <tag["orange"]>TIL</tag>
-                    </line1>
-                    <line2>
-                        <author>posted by <user["/someone"]>someone</user> 2 days ago</author>
-                        <comment_num>1 comment</comment_num>
-                    </line2>
-                </info>
-            </post>
-        </main>
-        <footer content>
-            <a["instagram.com"]>
-                <img["instagram.svg"] />
-                Our Instagram!
-            </a>
-            <right>Copyright 2020</right>
-        </footer>
-    </body>
+  <head>
+    <title>Hello!</title>
+  </head>
+  <body>
+    <nav content>
+      <name>My Forum!</name>
+      <right>
+        <page("/")>Main</page>
+        <page("/about")>About</page>
+        <page("/contact")>Contact</page>
+        <page("/profile")>Profile</page>
+      </right>
+    </nav>
+    <main>
+      <post>
+        <votes>15</votes>
+        <info>
+          <line1>
+            <title("mysite.com")>How I Learned to Stop Worrying and Love HTML</title>
+            <tag("red")>Article</tag>
+            <tag("blue")>Advice</tag>
+          </line1>
+          <line2>
+            <author>posted by <user("/sad_man")>sad_man</user> 2 days ago</author>
+            <comment_num>12 comments</comment_num>
+          </line2>
+        </info>
+      </post>
+      <post>
+        <votes>6</votes>
+        <info>
+          <line1>
+            <title("csstricks.com")>Turns out you can actually center things in CSS!</title>
+            <tag("blue")>Advice</tag>
+            <tag("orange")>TIL</tag>
+          </line1>
+          <line2>
+            <author>posted by <user("/someone")>someone</user> 2 days ago</author>
+            <comment_num>1 comment</comment_num>
+          </line2>
+        </info>
+      </post>
+    </main>
+    <footer content>
+      <a("instagram.com")>
+        <img("instagram.svg")/>
+        Our Instagram!
+      </a>
+      <right>Copyright 2020</right>
+    </footer>
+  </body>
 </html>

@@ -13,7 +13,7 @@ ASS understands a lot of common web data types by default.
 **Trait**
 A trait is a word indicating a stylistic quality of a block - for example it's size, position or color.
 A trait can be a *simple trait*, meaning it takes no arguments, or a *complex trait* meaning it takes at least one argument.
-Traits can take arguments in brackets - `trait[arg]`.
+Traits can take arguments in parentheses - `trait(arg)`.
 
 **Tag**
 A tag is a sequence of one or more traits in angle brackets. There are closing and opening tags.
@@ -28,7 +28,7 @@ A block can have many children blocks, and one parent.
 ```ass
 <center tallest>
     <par inline>Welcome to my post!</par>
-    <tag["red"]>Media</tag>
+    <tag(red)>Media</tag>
 </center>
 ```
 
@@ -37,11 +37,11 @@ The content tree is a recursive block structure. Each pair of opening-closing ta
 
 ## Trait Bundles
 ```ass
-par = text_color["black"] font_size[16px] justify no_wrap
-tag[color] = bg_color[color] border_color[darken(color, 10%)]
+par = text_color(black) font_size(16px) justify no_wrap
+tag(color) = bg_color(color) border_color(color - 10%)
 ```
 
-If you have a lot of blocks that need the `text_color["black"] font_size[16px] justify no_wrap` traits, writing them out every time might start feeling repatative.
+If you have a lot of blocks that need the `text_color(black) font_size(16px) justify no_wrap` traits, writing them out every time might start feeling repatative.
 
 Worry not! You can bundle them together so that one small word means all of that.
 
@@ -52,14 +52,14 @@ Trait bundles are typically used to specify properties that are irrelevant to th
 ```ass
 body require {
     width <= 80rem
-    hcenter = $window.center
+    hcenter = $window[center]
 } prefer {
     width = 80rem
 }
 
 title require {
-    hcenter = $window.center
-    top = $parent.top + 1rem
+    hcenter = $window[center]
+    top = $parent[top] + 1rem
 }
 ```
 
