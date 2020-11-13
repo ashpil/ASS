@@ -72,3 +72,4 @@ This means that on small screens the body will fill up the entire screen, and on
 The `title` part ensures titles are always centered in the window, and that the top of a title is `1rem` below the top of the parent container. 
 Special variables, such as `$parent` or `$window` are designated by `$`.
 
+We can specify constraints between elements using the traits.
