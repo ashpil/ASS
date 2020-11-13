@@ -40,56 +40,49 @@
   }
 </style>
 
-<html>
-  <head>
-    <title>Hello!</title>
-  </head>
-  <body>
-    <nav content>
-      <name>My Forum!</name>
-      <right>
-        <page(/)>Main</page>
-        <page(/about)>About</page>
-        <page(/contact)>Contact</page>
-        <page(/profile)>Profile</page>
-      </right>
-    </nav>
-    <main>
-      <post>
-        <votes>15</votes>
-        <info>
-          <line1>
-            <title(mysite.com)>How I Learned to Stop Worrying and Love HTML</title>
-            <tag(red)>Article</tag>
-            <tag(blue)>Advice</tag>
-          </line1>
-          <line2>
-            <author>posted by <user(/sad_man)>sad_man</user> 2 days ago</author>
-            <comment_num>12 comments</comment_num>
-          </line2>
-        </info>
-      </post>
-      <post>
-        <votes>6</votes>
-        <info>
-          <line1>
-            <title(csstricks.com)>Turns out you can actually center things in CSS!</title>
-            <tag(blue)>Advice</tag>
-            <tag(orange)>TIL</tag>
-          </line1>
-          <line2>
-            <author>posted by <user(/someone)>someone</user> 2 days ago</author>
-            <comment_num>1 comment</comment_num>
-          </line2>
-        </info>
-      </post>
-    </main>
-    <footer content>
-      <a(instagram.com)>
-        <img(instagram.svg)/>
-        Our Instagram!
-      </a>
-      <right>Copyright 2020</right>
-    </footer>
-  </body>
-</html>
+<nav content>
+  <name>My Forum!</name>
+  <right>
+    <page(/)>Main</page>
+    <page(/about)>About</page>
+    <page(/contact)>Contact</page>
+    <page(/profile)>Profile</page>
+  </right>
+</nav>
+<main>
+  <post>
+    <votes>15</votes>
+    <info>
+      <line1>
+        <title(mysite.com)>How I Learned to Stop Worrying and Love HTML</title>
+        <tag(red)>Article</tag>
+        <tag(blue)>Advice</tag>
+      </line1>
+      <line2>
+        <author>posted by <user(/sad_man)>sad_man</user> 2 days ago</author>
+        <comment_num>12 comments</comment_num>
+      </line2>
+    </info>
+  </post>
+  <post>
+    <votes>6</votes>
+    <info>
+      <line1>
+        <title(csstricks.com)>Turns out you can actually center things in CSS!</title>
+        <tag(blue)>Advice</tag>
+        <tag(orange)>TIL</tag>
+      </line1>
+      <line2>
+        <author>posted by <user(/someone)>someone</user> 2 days ago</author>
+        <comment_num>1 comment</comment_num>
+      </line2>
+    </info>
+  </post>
+</main>
+<footer content>
+  <a(instagram.com)>
+    <img(instagram.svg)/>
+    Our Instagram!
+  </a>
+  <right>Copyright 2020</right>
+</footer>
