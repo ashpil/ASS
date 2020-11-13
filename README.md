@@ -4,3 +4,7 @@ ASS is a WIP markup language, designed to fill a similar role as HTML/CSS do tod
 
 
 Head to [`/documents`](/documents) for more information.
+
+### Install
+
+[Install Rust](https://www.rust-lang.org/tools/install), and Cargo will handle everything else for you. Just do `cargo run` from the directory.
