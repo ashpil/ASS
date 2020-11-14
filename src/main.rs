@@ -1,5 +1,5 @@
-use ass::asml_parser::asml_parser;
+use ass::ass_parser::ass_parser;
 
 fn main() {
-    println!("{:#?}", asml_parser::tag("<tag1><tag2><#A comment lol#></tag2></tag1>"))
+    println!("{:#?}", ass_parser::stylesheet("test { width = lmao[test], else = 50\nlength <= $window[test] + 5 }\nagain { property = 40, else = $parent[height] }"))
 }

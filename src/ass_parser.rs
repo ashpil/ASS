@@ -1,69 +1,78 @@
-pub enum Property {
-    Top,
-    Bottom,
-    Left, 
-    Right,
-    Center,
-    VCenter,
-    HCenter,
-}
+use std::collections::HashMap;
 
+#[derive(Debug, PartialEq)]
 pub enum Entity {
     Parent,
     Window,
-    Any(String),
+    Other(String),
 }
 
-pub enum Value {
-    Ref (Entity, Property),
-    Num (f32),
-}
-
+#[derive(Debug, PartialEq)]
 pub enum Relation {
     GE,
     EQ,
     LE,
 }
 
-pub struct Constraint {
-    require: Option<(Relation, Value)>,
-    want: Option<(Relation, Value)>,
-    prefer: Option<(Relation, Value)>,
-    r#try: Option<(Relation, Value)>,
+#[derive(Debug, PartialEq)]
+pub enum Arith {
+    Ref(Entity, String),
+    Num(u32),
+    Add(Box<Arith>, Box<Arith>),
+    Sub(Box<Arith>, Box<Arith>),
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Style {
-    top: Constraint,
-    bottom: Constraint,
-    left: Constraint,
-    right: Constraint,
-    center: Constraint,
-    color: u32,
+    name: String,
+    attr: HashMap<String, Vec<(Relation, Arith)>>,
 }
 
-/*
-TODO: Some of this is done, but I think I still want to rework some of the data structures above
 peg::parser! {
     pub grammar ass_parser() for str {
+        use self::Arith::*;
+        use self::Relation::*;
+
         rule word() -> String
             = s:$(['a'..='z' | '_' | '0'..='9']+) { s.to_string() }
 
+        rule number() -> u32 
+            = n:$(['0'..='9']+) { n.parse().unwrap() }
+
         rule relation() -> Relation
-            = " " { Relation::EQ } / " <= " { Relation::LE } / " >= " { Relation::GE }
+            = "=" { EQ } / "<=" { LE } / ">=" { GE }
 
         rule entity() -> Entity
-            = "$parent" { Entity::Parent } / "$window" / { Entity::Window } / w:word() { Entity::AnyPw) }
+            = "$parent" { Entity::Parent }
+            / "$window" { Entity::Window }
+            / w:word() { Entity::Other(w) }
 
-        rule constraints() ->
-            "require" r:relation() t:entity()
+        rule attribute() -> Arith
+            = e:entity() "[" w:word() "]" { Ref(e, w) } 
 
-        rule rule() -> Constriant 
-            = s:word() ":" 
+        rule attr_or_num() -> Arith
+            = attribute() / n:number() { Num(n) }
+
+        rule arith() -> Arith
+            = p1:attribute() " - " p2:attr_or_num() { Sub(Box::new(p1), Box::new(p2)) }
+            / p1:attribute() " + " p2:attr_or_num() { Add(Box::new(p1), Box::new(p2)) }
+            / p:attribute() " - " a:arith() { Sub(Box::new(p), Box::new(a)) }
+            / p:attribute() " + " a:arith() { Sub(Box::new(p), Box::new(a)) }
+            / attr_or_num()
+
+
+        rule constraint() -> (Relation, Arith)
+            = " " r:relation() " " a:arith() { (r, a) }
+
+        rule spec() -> (String, Vec<(Relation, Arith)>)
+            = attr:word() c:constraint() ** ", else" { (attr, c) } 
 
         rule style() -> Style
-            = w:word() "{" "}" 
+            = name:word() " { " attr:spec() ** "\n" " }" { Style { name, attr: attr.into_iter().collect::<HashMap<String, Vec<(Relation, Arith)>>>() } }
+
+        pub rule stylesheet() -> Vec<Style>
+            = style() ** "\n" 
         
     }
 }
 
-*/

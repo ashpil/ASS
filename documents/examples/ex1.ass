@@ -10,29 +10,29 @@
   user(href) = a(href)
 
   content {
-    width: require <= 90rem, prefer 90rem
-    hcenter: require $window[hcenter]
-    height: prefer 5rem
+    width <= 90rem, else = 90rem
+    hcenter = $window[hcenter]
+    height = 5rem
   }
 
   name {
-      vcenter: want $parent[vcenter]
-      font_size: want 30px
+      vcenter = $parent[vcenter] + 20rem
+      font_size = 30px
   }
 
   right {
-      vcenter: want $parent[vcenter]
-      right: want $parent[right]
+      vcenter = $parent[vcenter]
+      right = $parent[right]
   }
 
   main {
-      width: require <= 70rem, prefer 70rem
-      center: require $window[center]
+      width <= 70rem, else = 70rem
+      center = $window[center]
   }
 
   votes {
-      height: require $parent[height]
-      width: require $content[width]
+      height = $parent[height]
+      width = $content[width]
   }
 </style>
 

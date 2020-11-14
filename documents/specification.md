@@ -50,14 +50,12 @@ Trait bundles are typically used to specify properties that are irrelevant to th
 ## Constraints 
 
 ```ass
-body require {
-    width <= 80rem
+body {
+    width <= 80rem, else = 80rem
     hcenter = $window[center]
-} prefer {
-    width = 80rem
 }
 
-title require {
+title {
     hcenter = $window[center]
     top = $parent[top] + 1rem
 }
