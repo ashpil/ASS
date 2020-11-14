@@ -40,7 +40,7 @@
   }
 </style>
 
-<tree>
+<body>
   <nav content>
     <name>My Forum!</name>
     <right>
@@ -87,4 +87,4 @@
     </a>
     <right>Copyright 2020</right>
   </footer>
-</tree>
+</body>
