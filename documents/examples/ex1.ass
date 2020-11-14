@@ -9,34 +9,30 @@
   line2 = text_color(grey)
   user(href) = a(href)
 
-  content require {
-      width <= 90rem
-      hcenter = $window[hcenter]
-  } prefer {
-      width = 90rem
-      height = 5rem
+  content {
+    width: require <= 90rem, prefer 90rem
+    hcenter: require $window[hcenter]
+    height: prefer 5rem
   }
 
-  name prefer {
-      vcenter = $parent[vcenter]
-      font_size = 30px
+  name {
+      vcenter: want $parent[vcenter]
+      font_size: want 30px
   }
 
-  right prefer {
-      vcenter = $parent[vcenter]
-      right = $parent[right]
+  right {
+      vcenter: want $parent[vcenter]
+      right: want $parent[right]
   }
 
-  main require {
-      width <= 70rem
-      center = $window[center]
-  } prefer {
-      width = 70rem
+  main {
+      width: require <= 70rem, prefer 70rem
+      center: require $window[center]
   }
 
-  votes require {
-      height = $parent[height]
-      width = $content[width]
+  votes {
+      height: require $parent[height]
+      width: require $content[width]
   }
 </style>
 
