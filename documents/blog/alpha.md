@@ -167,7 +167,7 @@ Isn't that *so much less code*? And it makes so much more intuitive sense, too! 
 size to be the window height minus 10 pixels, for margin. And then it just locks the height to the width, to maintain the cube shape. Easy! And the actual content tree is so much easier to understand, too!
 Unnecessary, unsemantic `div` statements begone!
 
-### The implementation
+### The Implementation
 
 Our eventual goal is to be able to take something like the specification above, and transform it into an image with a rudimentary browser. For this reason, we've picked Rust as our implementation language.
 Its diverse ecosystem means we're not going to write extra code, multiple browsers that we can use as reference points have been written the language already, and most importantly, it is an absolute
@@ -198,7 +198,7 @@ Tag {
 },
 ```
 
-(if you want to know about args and other details, check out [the specification](https://github.com/ashpil/ASS/documents/specification.md)).
+(if you want to know about args and other details, check out [the specification](https://github.com/ashpil/ASS/blob/master/documents/specification.md)).
 
 Similar for the styles, `tag { width = 50, else = 30\n height <= $parent[width] }` parses to this:
 ```rust
@@ -235,7 +235,7 @@ Style {
 The PEG syntax seemed alien at first, but the documentation is great, and once you get the hang of it, it makes a lot of sense and is really expressive. The one issue is that whitespace and comments can
 get a little verbose.
 
-### The future
+### The Future
 
 Now that we can get data from text files, our next goal is to actually get some sort of picture from that data. Rust has an
 [existing Cassowary solver implementation](https://docs.rs/cassowary/0.3.0/cassowary/) that we intend to use, as well as similar simple browser implementations, ex.
