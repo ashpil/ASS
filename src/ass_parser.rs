@@ -33,6 +33,8 @@ peg::parser! {
         use self::Arith::*;
         use self::Relation::*;
 
+        rule whitespace() = quiet!{ [c if c.is_whitespace()]+ }
+
         rule word() -> String
             = s:$(['a'..='z' | '_' | '0'..='9']+) { s.to_string() }
 
@@ -54,24 +56,24 @@ peg::parser! {
             = attribute() / n:number() { Num(n) }
 
         rule arith() -> Arith
-            = p1:attribute() " - " p2:attr_or_num() { Sub(Box::new(p1), Box::new(p2)) }
-            / p1:attribute() " + " p2:attr_or_num() { Add(Box::new(p1), Box::new(p2)) }
-            / p:attribute() " - " a:arith() { Sub(Box::new(p), Box::new(a)) }
-            / p:attribute() " + " a:arith() { Sub(Box::new(p), Box::new(a)) }
+            = p1:attribute() whitespace()* "-" whitespace()* p2:attr_or_num() { Sub(Box::new(p1), Box::new(p2)) }
+            / p1:attribute() whitespace()* "+" whitespace()* p2:attr_or_num() { Add(Box::new(p1), Box::new(p2)) }
+            / p:attribute() whitespace()* "-" whitespace()* a:arith() { Sub(Box::new(p), Box::new(a)) }
+            / p:attribute() whitespace()* "+" whitespace()* a:arith() { Sub(Box::new(p), Box::new(a)) }
             / attr_or_num()
 
 
         rule constraint() -> (Relation, Arith)
-            = " " r:relation() " " a:arith() { (r, a) }
+            = whitespace() r:relation() whitespace() a:arith() { (r, a) }
 
         rule spec() -> (String, Vec<(Relation, Arith)>)
             = attr:word() c:constraint() ** ", else" { (attr, c) } 
 
         rule style() -> Style
-            = name:word() " { " attr:spec() ** "\n" " }" { Style { name, attr: attr.into_iter().collect::<HashMap<String, Vec<(Relation, Arith)>>>() } }
+            = name:word() whitespace()* "{" whitespace()* attr:spec() ** whitespace() whitespace()* "}" { Style { name, attr: attr.into_iter().collect::<HashMap<String, Vec<(Relation, Arith)>>>() } }
 
         pub rule stylesheet() -> Vec<Style>
-            = style() ** "\n" 
+            = whitespace()* s:style() ** whitespace() { s }
         
     }
 }
