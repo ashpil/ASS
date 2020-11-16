@@ -1,0 +1,14 @@
+content {
+    width <= 90, else = 90
+    height = 5
+}
+
+right {
+    vcenter = $parent[vcenter]
+    right = $parent[right]
+}
+
+name {
+    vcenter = $parent[vcenter] + 20
+    font_size = 30
+}

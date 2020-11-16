@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Alpha: Progress Report}
+\author{Mike Fang\\ mf647 \and Andrei Shpilenok\\ ais76}
+
+\begin{document}
+\maketitle
+\section*{Vision}
+Our vision of unifying content and styling natively has not
+changed with this sprint. Our goal is to develop a fully fleshed out language
+for the web which brings together CSS and HTML and absolves
+javascript of the responsibility of having to do everything. We also aim to improve 
+styling in the web by integrating constraints with our language. We envision the
+project to consist of two main parts:
+\begin{enumerate}
+	\item Designing and Parsing the Language
+	\item Creating a Dummy Browser to Display the Result of the Language
+\end{enumerate}
+
+\section*{Progress}
+
+We have made significant progress on designing and parsing the language this sprint.
+We laid out the specification for the language, and finished implementing 
+key components of the parser.
+
+In order to implement the parser, we used a parser generator library, rust-peg.
+The natural language 
+specification of the language was transformed into an
+intermediary grammer, parsing expression grammer(PEG), and then fed into the parser
+generator. With the parser from the generator, we can then feed our language into it
+to generate the appropriate data for the browser to paint with.
+
+Because of the syntactical and semantic differences between the styling portion and 
+the markup portion of our langauge, we built two parsers to handle them. The parsers
+also output different data structures. In our demo, we are inputting two realistic
+examples, one for the styling portion and one for the markup portion,
+and printing out the output of the parsers. This demonstrates the efficacy of
+our parsers and shows that we will be able to take the next step of transforming
+parser output to information the browser can use to paint with.
+
+\section*{Activity}
+
+\subsection*{Andrei}
+\begin{enumerate}
+	\item Designed the core features of the language
+	\item Wrote the parsers
+	\item Wrote the blog post
+\end{enumerate}
+
+\subsection*{Mike}
+\begin{enumerate}
+	\item Provided feedback on the core features of the langauge
+	\item Wrote the Progress Report
+	\item Wrote test cases for the parsers and fixed any issues identified from 
+	      testing
+\end{enumerate}
+
+\section*{Productivity}
+We have been very productive this sprint and
+accomplished the two main tasks of designing core features of the language
+and writing the parser. We established a strong base for the next phase of the project
+. In our charter, we were more ambitious about what we could accomplish this sprint,
+but after starting, we realized having a strong design and being able to parse the
+language was more than enough work and would take a lot longer than anticipated.
+
+\section*{Grade}
+
+We believe we achieved our goals for this sprint and achieved an excellent scope
+grade. The bulk of our work this phase was doing research on packages and language
+ideas so that we had a solid plan in place for what features we wanted to implement
+and how to implement them. We spent the rest of our time working on the 
+parser--translating our language to PEG, translating the PEG to input for the parser, and testing our parser thoroughly. 
+This is comparable in scope to any of the programming
+projects we had to do in class. 
+
+\section*{Goals}
+
+\subsection*{Satisfactory}
+\begin{enumerate}
+	\item Combining the two parsers so that we can process a complete program
+	\item Implement bundle parsing in the styling portion of the language
+\end{enumerate}
+
+\subsection*{Good}
+\begin{enumerate}
+	\item Have an end-to-end implementation with a dummy browser which can receive
+		our language as input and output a web page with basic formatting
+	\item Users will be able to use pre-implemented tags in the code to structure
+		data
+\end{enumerate}
+
+\subsection*{Excellent}
+\begin{enumerate}
+	\item Users will be able to create custom tags
+	\item Users will be able to use functions and variables 
+		in the styling portion of the language to structure and
+		style data
+\end{enumerate}
+\end{document}

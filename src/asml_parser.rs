@@ -210,4 +210,50 @@ mod asml_parser_tests {
             })
         )
     }
+
+    #[test]
+    #[should_panic]
+    fn missing_single_start_tag_fail() {
+        assert_eq!(
+            asml_parser::tag("<h1(god)>"),
+            Ok(Element::Tag {
+                traits: vec![Trait {
+                    name: "h1".to_string(),
+                    args: vec!["god".to_string()],
+                }],
+                children: Vec::new(),
+            })
+        )
+    }
+
+    #[test]
+    #[should_panic]
+    fn missing_single_end_tag_fail() {
+        assert_eq!(
+            asml_parser::tag("</h1(god)>"),
+            Ok(Element::Tag {
+                traits: vec![Trait {
+                    name: "h1".to_string(),
+                    args: vec!["god".to_string()],
+                }],
+                children: Vec::new(),
+            })
+        )
+    }
+    
+    // TODO: HTML does not worry about this, should we be as stringent?
+    #[test]
+    #[should_panic]
+    fn incorrect_tag_order_fail() {
+        assert_eq!(
+            asml_parser::tag("<h1(god)><a></h1></a>"),
+            Ok(Element::Tag {
+                traits: vec![Trait {
+                    name: "h1".to_string(),
+                    args: vec!["god".to_string()],
+                }],
+                children: Vec::new(),
+            })
+        )
+    }
 }
