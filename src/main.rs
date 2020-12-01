@@ -1,5 +1,5 @@
-use ass::ass_parser::ass_parser;
-use ass::asml_parser::asml_parser;
+use ass::parser::ass_parser::ass_parser;
+use ass::parser::asml_parser::asml_parser;
 use std::fs::read_to_string;
 
 
