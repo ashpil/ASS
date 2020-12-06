@@ -14,11 +14,11 @@ fn get_input() -> String {
     buffer
 }
 
-fn print_changes(variable_pool: &HashMap<&String, HashMap<&String, Variable>>, solver: &Solver) {
+fn print_changes(variable_pool: &HashMap<usize, HashMap<&String, Variable>>, solver: &Solver) {
     println!("Changes:");
-    for (style_name, attr_to_var) in variable_pool {
+    for (id, attr_to_var) in variable_pool {
         for (attr_name, var) in attr_to_var {
-            println!("{}[{}] = {}", style_name, attr_name, solver.get_value(*var))
+            println!("{}[{}] = {}", id, attr_name, solver.get_value(*var))
         }
     }
 }
@@ -76,7 +76,7 @@ fn main() {
     solve_constraints(&style_tree, &mut variable_pool, &mut solver);
     println!("{:#?}", style_tree);
     println!("{:#?}", variable_pool);
-    // print_changes(&variable_pool, &solver);
+    print_changes(&variable_pool, &solver);
 
     // let mut names = HashMap::new();
 
