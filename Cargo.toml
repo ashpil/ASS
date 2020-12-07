@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 peg = "0.6.3"
 cassowary = "^0.3.0"
+minifb = "0.19.1"
+

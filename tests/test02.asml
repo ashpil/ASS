@@ -1,16 +1,16 @@
 <style>
     box {
-        width = 40
-        height = 40
-        x = 100
-        y = 100
+        width = 20
+        height = 20
+        x = 20
+        y = 20
     }
 
     square {
         width = 50
         height = 50
-        x = 200
-        y = 200
+        x = 40
+        y = 40
     }
 </style>
 <body>

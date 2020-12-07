@@ -1,18 +1,20 @@
 use super::style_tree::{retrieve_variable, StyleNode};
+use crate::parser::asml_parser::Element;
 use cassowary::{AddConstraintError, Constraint, Solver, Variable, WeightedRelation};
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq)]
 pub struct RenderNode<'a> {
-    id: usize,
-    attrs: RenderData<'a>,
-    children: Vec<RenderNode<'a>>,
+    pub id: usize,
+    pub attrs: RenderData<'a>,
+    pub children: Vec<RenderNode<'a>>,
+    pub element: &'a Element,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct RenderData<'a> {
-    constraints: Vec<(&'a String, f64)>,
-    properties: Vec<(&'a String, &'a String)>,
+    pub constraints: HashMap<&'a String, f64>,
+    pub properties: HashMap<&'a String, &'a String>,
 }
 
 pub fn generate_render_tree<'a>(
@@ -22,6 +24,7 @@ pub fn generate_render_tree<'a>(
 ) -> RenderNode<'a> {
     RenderNode {
         id: root.id,
+        element: root.element,
         children: root
             .children
             .iter()

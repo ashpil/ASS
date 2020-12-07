@@ -6,7 +6,11 @@ use cassowary::strength::{REQUIRED, STRONG, WEAK};
 use cassowary::WeightedRelation::*;
 use cassowary::{Solver, Variable};
 use std::collections::{HashMap, HashSet};
+use minifb::{Key, ScaleMode, Window, WindowOptions};
+use ass::display::{Scene, rgb_to_u32};
 use std::fs::read_to_string;
+use std::env;
+use std::process::exit;
 
 fn get_input() -> String {
     let mut buffer = String::new();
@@ -26,10 +30,18 @@ fn print_changes(variable_pool: &HashMap<usize, HashMap<&String, Variable>>, sol
 }
 
 fn main() {
-    println!("Enter the path to the file:");
-    let file_path = get_input();
-    let code = read_to_string(file_path.trim()).expect("Failed to find file");
-    let parsed_code = parser(&code).expect("Failed to parse file");
+    let code = if let Some(filename) = env::args().collect::<Vec<String>>().get(1) {
+        if let Ok(contents) = read_to_string(filename) {
+            parser(&contents)
+        } else {
+            eprintln!("error: {}: invalid file", filename);
+            exit(1);
+        }
+    } else {
+        eprintln!("Usage: ass [filename]");
+        exit(1);
+    }.unwrap();
+
     // println!("{:#?}", parsed_code);
     let mut solver = Solver::new();
     let window_width = Variable::new();
@@ -60,8 +72,8 @@ fn main() {
     let default_attributes = HashMap::new();
 
     let style_tree = construct_style_tree(
-        &parsed_code.0,
-        &parsed_code.1,
+        &code.0,
+        &code.1,
         &constraint_names,
         &property_names,
         0,
@@ -72,7 +84,7 @@ fn main() {
 
     generate_variable_pool(
         &style_tree,
-        &parsed_code.1,
+        &code.1,
         &constraint_names,
         &mut variable_pool,
     );
@@ -84,46 +96,28 @@ fn main() {
     let render_tree = generate_render_tree(&style_tree, &solver, &mut variable_pool);
     println!("{:#?}", render_tree);
 
-    // let mut names = HashMap::new();
 
-    // let window_width = Variable::new();
-    // names.insert(window_width, "window_width");
+    let mut window = Window::new(
+        "ASS",
+        500,
+        500,
+        WindowOptions {
+            resize: true,
+            scale_mode: ScaleMode::UpperLeft,
+            ..WindowOptions::default()
+        },
+    ).expect("Unable to create window");
 
-    // struct Element {
-    //     left: Variable,
-    //     right: Variable,
-    // }
+    let mut scene = Scene::new(500, 500);
 
-    // let box1 = Element {
-    //     left: Variable::new(),
-    //     right: Variable::new(),
-    // };
+    // Limit to max ~60 fps update rate
+    window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
 
-    // names.insert(box1.left, "box1.left");
-    // names.insert(box1.right, "box1.right");
-
-    // let box2 = Element {
-    //     left: Variable::new(),
-    //     right: Variable::new(),
-    // };
-    // names.insert(box2.left, "box2.left");
-    // names.insert(box2.right, "box2.right");
-
-    // let mut solver = Solver::new();
-    // solver
-    //     .add_constraints(&[
-    //         window_width | GE(REQUIRED) | 0.0,        // positive window width
-    //         box1.left | EQ(REQUIRED) | 0.0,           // left align
-    //         box2.right | EQ(REQUIRED) | window_width, // right align
-    //         box2.left | GE(REQUIRED) | box1.right,    // no overlap
-    //         box1.left | LE(REQUIRED) | box1.right,
-    //         box2.left | LE(REQUIRED) | box2.right,
-    //         box1.right - box1.left | EQ(WEAK) | 50.0,
-    //         box2.right - box2.left | EQ(WEAK) | 100.0,
-    //     ])
-    //     .unwrap();
-    // print_changes(&names, solver.fetch_changes());
-    // solver.add_edit_variable(window_width, STRONG).unwrap();
-    // solver.suggest_value(window_width, 300.0).unwrap();
-    // print_changes(&names, solver.fetch_changes());
+    while window.is_open() && !window.is_key_down(Key::Escape) {
+        scene.clear();
+        scene.maybe_resize(window.get_size());
+        // scene.add_rect(20, 20, 100, 100, rgb_to_u32(100, 200, 100));
+        scene.process_render_tree(&render_tree);
+        scene.update_window(&mut window);
+    }
 }

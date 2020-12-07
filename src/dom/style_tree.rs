@@ -14,7 +14,7 @@ pub struct StyleGroups<'a> {
 #[derive(Debug, PartialEq)]
 pub struct StyleNode<'a> {
     pub id: usize,
-    element: &'a Element,
+    pub element: &'a Element,
     pub children: Vec<StyleNode<'a>>,
     pub styles: StyleGroups<'a>,
 }
