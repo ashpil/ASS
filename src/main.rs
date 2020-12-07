@@ -40,6 +40,8 @@ fn main() {
         "bottom".to_string(),
         "width".to_string(),
         "height".to_string(),
+        "x".to_string(),
+        "y".to_string()
     ]
     .iter()
     .cloned()
