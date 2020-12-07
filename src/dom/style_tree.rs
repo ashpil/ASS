@@ -6,23 +6,17 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[derive(Debug, PartialEq)]
-struct StyleGroups<'a> {
-    constraints: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
-    properties: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
+pub struct StyleGroups<'a> {
+    pub constraints: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
+    pub properties: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct RenderNode {
-    id: usize,
-    attrs: HashMap<String, f64>,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct StyledNode<'a> {
-    id: usize,
+pub struct StyleNode<'a> {
+    pub id: usize,
     element: &'a Element,
-    children: Vec<StyledNode<'a>>,
-    styles: StyleGroups<'a>,
+    pub children: Vec<StyleNode<'a>>,
+    pub styles: StyleGroups<'a>,
 }
 
 fn relation_to_operator(rel: &Relation) -> WeightedRelation {
@@ -33,7 +27,7 @@ fn relation_to_operator(rel: &Relation) -> WeightedRelation {
     }
 }
 
-fn retrieve_variable(
+pub fn retrieve_variable(
     variable_pool: &mut HashMap<usize, HashMap<&String, Variable>>,
     node_id: usize,
     attr_name: &String,
@@ -85,11 +79,11 @@ pub fn construct_style_tree<'a>(
     property_names: &'a HashSet<String>,
     id: usize,
     default_attributes: &'a HashMap<String, Vec<(Relation, Arith)>>,
-) -> StyledNode<'a> {
+) -> StyleNode<'a> {
     match root {
         Element::Tag { traits, children } => {
             // Loop through traits
-            return StyledNode {
+            return StyleNode {
                 id: id,
                 element: root,
                 children: children
@@ -115,8 +109,8 @@ pub fn construct_style_tree<'a>(
                 ),
             };
         }
-        Element::Text(_) => StyledNode {
-            id: id,
+        Element::Text(_) => StyleNode {
+            id: id + 1,
             element: root,
             children: vec![],
             styles: StyleGroups {
@@ -128,7 +122,7 @@ pub fn construct_style_tree<'a>(
 }
 
 pub fn generate_variable_pool<'a>(
-    root: &'a StyledNode,
+    root: &'a StyleNode,
     stylesheet: &'a Vec<Style>,
     constraint_names: &'a HashSet<String>,
     variable_pool: &mut HashMap<usize, HashMap<&'a String, Variable>>,
@@ -145,7 +139,7 @@ pub fn generate_variable_pool<'a>(
 }
 
 pub fn solve_constraints<'a>(
-    root: &'a StyledNode,
+    root: &'a StyleNode,
     variable_pool: &mut HashMap<usize, HashMap<&String, Variable>>,
     solver: &mut Solver,
 ) {
@@ -185,5 +179,3 @@ pub fn solve_constraints<'a>(
         solve_constraints(child, variable_pool, solver);
     }
 }
-
-pub fn generate_render_tree<'a>(root: &'a StyledNode) {}

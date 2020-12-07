@@ -1,4 +1,6 @@
-use ass::dom::{construct_style_tree, generate_variable_pool, solve_constraints};
+use ass::dom::{
+    construct_style_tree, generate_render_tree, generate_variable_pool, solve_constraints,
+};
 use ass::parser::parser;
 use cassowary::strength::{REQUIRED, STRONG, WEAK};
 use cassowary::WeightedRelation::*;
@@ -41,7 +43,7 @@ fn main() {
         "width".to_string(),
         "height".to_string(),
         "x".to_string(),
-        "y".to_string()
+        "y".to_string(),
     ]
     .iter()
     .cloned()
@@ -79,6 +81,8 @@ fn main() {
     println!("{:#?}", style_tree);
     println!("{:#?}", variable_pool);
     print_changes(&variable_pool, &solver);
+    let render_tree = generate_render_tree(&style_tree, &solver, &mut variable_pool);
+    println!("{:#?}", render_tree);
 
     // let mut names = HashMap::new();
 
