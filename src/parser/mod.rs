@@ -3,4 +3,3 @@ pub(crate) mod ass_parser;
 pub(crate) mod parser;
 
 pub use parser::parser::parser;
-

@@ -1,3 +1,5 @@
+use std::hash::{Hash, Hasher};
+
 #[derive(Debug, PartialEq)]
 pub struct Trait {
     pub name: String,
@@ -53,13 +55,13 @@ mod asml_parser_tests {
     use super::*;
 
     fn h1_element() -> Result<Element, peg::error::ParseError<peg::str::LineCol>> {
-        Ok(Element::Tag {
+        return Ok(Element::Tag {
             traits: vec![Trait {
                 name: "h1".to_string(),
                 args: Vec::new(),
             }],
             children: Vec::new(),
-        })
+        });
     }
 
     #[test]
@@ -201,9 +203,7 @@ mod asml_parser_tests {
                             name: "h1".to_string(),
                             args: vec!["god".to_string()],
                         }],
-                        children: vec![
-                            Element::Text("()".to_string())
-                        ],
+                        children: vec![Element::Text("()".to_string())],
                     },
                     Element::Text("^423$%33(4)232".to_string())
                 ],
@@ -240,7 +240,6 @@ mod asml_parser_tests {
             })
         )
     }
-    
     // TODO: HTML does not worry about this, should we be as stringent?
     #[test]
     #[should_panic]
@@ -256,4 +255,15 @@ mod asml_parser_tests {
             })
         )
     }
+    // #[test]
+    // fn multiple_top_level_tags() {
+    //     assert_eq!(
+    //         asml_parser::tag("<h1></h1><h1></h1>"),
+    //         Ok(Element::Tag {
+    //             traints: vec![Trait {
+    //                 name: "h1".to_string()
+    //             }]
+    //         })
+    //     )
+    // }
 }

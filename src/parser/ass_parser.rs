@@ -24,8 +24,8 @@ pub enum Arith {
 
 #[derive(Debug, PartialEq)]
 pub struct Style {
-    name: String,
-    attrs: HashMap<String, Vec<(Relation, Arith)>>,
+    pub name: String,
+    pub attrs: HashMap<String, Vec<(Relation, Arith)>>,
 }
 
 peg::parser! {
@@ -79,7 +79,7 @@ peg::parser! {
 #[cfg(test)]
 mod ass_parser_tests {
     use super::*;
-
+    
     macro_rules! hashmap {
         ($( $key: expr => $val: expr ),*) => {{
              let mut map = ::std::collections::HashMap::new();
@@ -87,7 +87,7 @@ mod ass_parser_tests {
              map
         }}
     }
-
+    
     #[test]
     fn basic_style_attr() {
         let expected = Ok(vec![Style {
