@@ -28,9 +28,21 @@ Doing so, we arrive at a simple window which is cross-platform and gives us cont
 
 ## Building the render tree
 
+In the process of creating the render tree we ran into several hard question to answer. The first is how to 
+efficiently
+identify different nodes in the DOM in order to process constraints between two different nodes. Because nodes
+can have as many traits as they want and share traits between each other,
+we could not use them as a reliable identifier. In the Android
+implementation of constraint styling, programmers manually create string IDs for each node and then use those
+IDs to specify constraints between nodes. In the next phase of the project, we will have to make decision on
+wether to follow the Android model or take a different approach. Currently, we have only implemented the
+most simple of constraints such as width, height, etc so that we can keep the approach simple and not have to worry as much about identifying individual nodes. However, we still needed a method of identifying individual
+nodes to create a mapping between the node and its constraint variables. It is currently done by assigning each node in the render tree an integer.
 
+Another diffcult, time-consuming decision is to identify default constraints which must be applied to each node. Obviously, we want nodes to stay within the bounds of the canvas, but what about overlapping nodes? How do we make our default constraints replicate the behavior of HTML/CSS or should the canvas handle it?
+This is another issue we have to tackle in the next phase of the project.
 
-
+Finally, we have to decide on a strict set of properties and constraints which can be specified for nodes. We need to establish a more well-defined language, which will also help pinpoint the final scope of our project.
 
 
 ## Conclusion
