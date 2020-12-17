@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Beta: Progress Report}
+\author{Mike Fang\\ mf647 \and Andrei Shpilenok\\ ais76}
+
+\begin{document}
+\maketitle
+\section*{Vision}
+Our vision of unifying content and styling natively has not
+changed with this sprint. Our goal is to develop a fully fleshed out language
+for the web which brings together CSS and HTML and absolves
+javascript of the responsibility of having to do everything. We also aim to improve 
+styling in the web by integrating constraints with our language. We envision the
+project to consist of two main parts:
+\begin{enumerate}
+	\item Designing and Parsing the Language
+	\item Creating a Dummy Browser to Display the Result of the Language
+\end{enumerate}
+
+After creating a dummy, end-to-end implementation, we realized we will not
+be able realize a fully-fleshed out union of CSS and HTML, as we will
+not have the time to implement all features. However,
+we believe we will still be able to implement a language which will be
+able to structure and describe content in a more concise way.
+
+\section*{Progress}
+
+This sprint we have completed an end-to-end, tracer-bullet implementation.
+The user is now able to draw nodes using the
+language. The nodes show up on the canvas as green rectangles.
+
+The way this works is as follows:
+\begin{enumerate}
+    \item Parsed Source Code is transformed into a Stylesheet and DOM
+    \item DOM and Stylesheet are combined into the Style Tree
+          (Now we know what nodes we have to paint and their corresponding styles)
+    \item Walk the Style Tree and each nodes constraint styles to create a Constraint Variable Pool which is a map from
+          Style Tree Node IDs to attribute names to constraint variables
+    \item Walk the Style Tree again and gather all constraint objects into the
+          constraint solver
+    \item Construct the Render Tree which consists of identical nodes to the Style Tree,
+          but they now store the direct values of attributes which are retrieved from
+          the solver
+    \item The Render Tree is then passed to the Scene module to be rendered
+\end{enumerate}
+
+\section*{Activity}
+
+\subsection*{Andrei}
+\begin{enumerate}
+	\item Wrote the Graphics Portion of the Blog Post
+	\item Implemented the Display Module
+\end{enumerate}
+
+\subsection*{Mike}
+\begin{enumerate}
+	\item Wrote the Render Tree portion of the Blog Post
+	\item Wrote the Progress Report
+	\item Implemented the Render Tree Module
+\end{enumerate}
+
+\section*{Productivity}
+We were very productive this sprint and accomplished our main goal
+of creating an end-to-end implementation which can take our web DSL and
+transform it into visible nodes in a dummy browser. However, we severely
+overestimated the difficulty of creating the render tree and
+being able to paint to canvas. As a result, we did not get to implementing
+tags
+
+\section*{Grade}
+
+While we did not manage to reach our excellent-scope goal
+of implementing tags, the difficulty of reaching an end-to-end dummy
+implementation was more challenging than we expected and we believe we
+still achieved Excellent scope when we factor in the amount of work
+we did. Constructing the render tree was especially challenging
+and we ran into many roadblocks, which often resulted in refactoring
+previously written code.
+
+\section*{Goals}
+
+\subsection*{Satisfactory}
+\begin{enumerate}
+	\item Achieve full constraint styling capability with well-defined
+            attributes as well as implementation of non-constraint-based
+            styles
+\end{enumerate}
+
+\subsection*{Good}
+\begin{enumerate}
+	\item Be able to draw text on the canvas
+	\item Users will be able to use pre-implemented tags in the code to structure content
+\end{enumerate}
+
+\subsection*{Excellent}
+\begin{enumerate}
+	\item Users will be able to create custom tags
+	\item Users will be able to use functions and variables 
+		in the styling portion of the language to structure and
+		style data
+\end{enumerate}
+\end{document}

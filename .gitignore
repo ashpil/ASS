@@ -1,3 +1,9 @@
 /target
 *.zip
 .DS_Store
+/submission
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
