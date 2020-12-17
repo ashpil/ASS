@@ -118,6 +118,7 @@ fn main() {
         scene.maybe_resize(window.get_size());
         // scene.add_rect(20, 20, 100, 100, rgb_to_u32(100, 200, 100));
         scene.process_render_tree(&render_tree);
+        scene.add_text("Hello can we write a very long thing that might possibly induce a line break, or nah", 30.0, 50.0, 50.0, 500.0, 100.0);
         scene.update_window(&mut window);
     }
 }
