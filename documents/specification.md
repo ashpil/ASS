@@ -34,18 +34,15 @@ A block can have many children blocks, and one parent.
 
 The content tree is a recursive block structure. Each pair of opening-closing tags can have blocks within them.
 
-
-## Trait Bundles
+## Trait Aliases
 ```ass
 par = text_color(black) font_size(16px) justify no_wrap
 tag(color) = bg_color(color) border_color(color - 10%)
 ```
 
-If you have a lot of blocks that need the `text_color(black) font_size(16px) justify no_wrap` traits, writing them out every time might start feeling repatative.
+If you have a lot of blocks that need the `text_color(black) font_size(16px) justify no_wrap` traits, writing them out every time might start feeling repetative.
 
 Worry not! You can bundle them together so that one small word means all of that.
-
-Trait bundles are typically used to specify properties that are irrelevant to the positioning of an element - such as color or roundedness.
 
 ## Constraints 
 
@@ -71,3 +68,4 @@ The `title` part ensures titles are always centered in the window, and that the 
 Special variables, such as `$parent` or `$window` are designated by `$`.
 
 We can specify constraints between elements using the traits.
+
