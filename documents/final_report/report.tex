@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Final Progress Report}
+\author{Mike Fang\\ mf647 \and Andrei Shpilenok\\ ais76}
+
+\begin{document}
+\maketitle
+\section*{Vision}
+Our vision of unifying content and styling natively has not
+changed with this sprint. Our goal is to develop a tech demo of a language
+for the web which brings together CSS and HTML and absolves
+javascript of the responsibility of having to do everything. We also aim to improve 
+styling in the web by integrating constraints with our language.
+project to consist of two main parts:
+\begin{enumerate}
+	\item Designing and Parsing the Language
+	\item Creating a Dummy Browser to Display the Result of the Language
+\end{enumerate}
+
+\section*{Progress}
+
+We spent this sprint finishing up implementing existing features, polishing, adding text rendering, and some nice-to-haves.
+
+On the finishing up end, we finished implementing the constraint solver and style tree builder. This
+had ended up being a lot more work than we had expected, so we are happy to have been able to finish
+it this sprint. 
+
+We also implemented text rendering, which was challenging in a similar way to first setting up the
+window - there are very many ways to do it, each very different with their own upsides and downsides.
+After trying multiple solutions, we settled on one that we were happy with.
+
+We also added a couple miscellaneous items like support for color hex codes and trait aliases.
+
+\section*{Activity}
+
+\subsection*{Andrei}
+\begin{enumerate}
+	\item Implemented text rendering
+	\item Expanded parser to add aliase and hex code support
+    \item Wrote the progress report
+\end{enumerate}
+
+\subsection*{Mike}
+\begin{enumerate}
+	\item Finished support for full constriant styling capability
+    \item Polished the render tree module
+\end{enumerate}
+
+\section*{Productivity}
+We had yet again underestimated the challenges ahead of us. Adding text rendering and finishing the 
+constraint styling alone was as much work as we had expected the more complete end of good scope to
+be, so we're very happy with having done that but also implementing additional parser features.
+
+\section*{Grade}
+
+Given the difficutly of finishing the render tree and adding text rendering, we think our work would
+be accurately reflected by an excellent scope grade. Although we had not implemented some of the 
+features we had hoped to have done for excellent scope, such as built-in tags and functions, we think
+the work required to add the features that we did was comparable. We chose to add these features
+rather than the ones we outlined as goals in our previous progress report because we felt they were
+more important for a working demo. 
+
+\section*{Possible Next Steps}
+
+There are more possible next steps than one can possibly enumerate! To no one's suprise, implementing
+a browser is an insane amount of work, and there is always more to be done.
+
+If we were interested in fleshing this out to be a complete language, there is a lot that could be
+done, such as adding support for various data types specifying size and conversion between them,
+built-in traits that specify styling and positioning functionality, as well as support for functions
+and variables. 
+
+One could also keep trying to innovate with the syntax and semantics of the language, as there are
+always improvements to be had in the design of any system. 
+
+Overall, though, we had achieved the progress required for a complete and fully-functional
+tech demo of the features that are unique to our design and idea, and we are happy with it.
+\end{document}
