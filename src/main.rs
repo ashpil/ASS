@@ -1,3 +1,4 @@
+use ass::display::{rgb_to_u32, Scene};
 use ass::dom::{
     construct_style_tree, generate_render_tree, generate_variable_pool, solve_constraints,
 };
@@ -5,11 +6,10 @@ use ass::parser::parser;
 use cassowary::strength::{REQUIRED, STRONG, WEAK};
 use cassowary::WeightedRelation::*;
 use cassowary::{Solver, Variable};
-use std::collections::{HashMap, HashSet};
 use minifb::{Key, ScaleMode, Window, WindowOptions};
-use ass::display::{Scene, rgb_to_u32};
-use std::fs::read_to_string;
+use std::collections::{HashMap, HashSet};
 use std::env;
+use std::fs::read_to_string;
 use std::process::exit;
 
 fn get_input() -> String {
@@ -40,7 +40,8 @@ fn main() {
     } else {
         eprintln!("Usage: ass [filename]");
         exit(1);
-    }.unwrap();
+    }
+    .unwrap();
 
     // println!("{:#?}", parsed_code);
     let mut solver = Solver::new();
@@ -71,6 +72,8 @@ fn main() {
 
     let default_attributes = HashMap::new();
 
+    let mut styles_to_id = HashMap::new();
+
     let style_tree = construct_style_tree(
         &code.0,
         &code.1,
@@ -78,24 +81,20 @@ fn main() {
         &property_names,
         0,
         &default_attributes,
+        1,
+        &mut styles_to_id,
     );
 
     let mut variable_pool = HashMap::new();
 
-    generate_variable_pool(
-        &style_tree,
-        &code.1,
-        &constraint_names,
-        &mut variable_pool,
-    );
-
-    solve_constraints(&style_tree, &mut variable_pool, &mut solver);
+    generate_variable_pool(&style_tree, &code.1, &constraint_names, &mut variable_pool);
     println!("{:#?}", style_tree);
+
+    solve_constraints(&style_tree, &mut variable_pool, &mut solver, &styles_to_id);
     println!("{:#?}", variable_pool);
     print_changes(&variable_pool, &solver);
     let render_tree = generate_render_tree(&style_tree, &solver, &mut variable_pool);
     println!("{:#?}", render_tree);
-
 
     let mut window = Window::new(
         "ASS",
@@ -106,7 +105,8 @@ fn main() {
             scale_mode: ScaleMode::UpperLeft,
             ..WindowOptions::default()
         },
-    ).expect("Unable to create window");
+    )
+    .expect("Unable to create window");
 
     let mut scene = Scene::new(500, 500);
 

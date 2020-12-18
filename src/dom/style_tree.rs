@@ -42,15 +42,21 @@ pub fn retrieve_variable(
 }
 
 fn collate_styles<'a>(
-    traits: &Vec<Trait>,
+    traits: &'a Vec<Trait>,
     stylesheet: &'a Vec<Style>,
     constraint_names: &'a HashSet<String>,
     property_names: &'a HashSet<String>,
     default_attributes: &'a HashMap<String, Vec<(Relation, Arith)>>,
+    id: usize,
+    styles_to_id: &mut HashMap<&'a String, usize>,
 ) -> StyleGroups<'a> {
     let mut constraints = vec![];
     let mut properties = vec![];
     for trait_ in traits.iter() {
+        if styles_to_id.contains_key(&trait_.name) {
+            panic!("A style with constraints cannot be used with more than one node.")
+        }
+        styles_to_id.insert(&trait_.name, id);
         for style in stylesheet.iter() {
             if trait_.name == style.name {
                 for attr in &style.attrs {
@@ -79,6 +85,8 @@ pub fn construct_style_tree<'a>(
     property_names: &'a HashSet<String>,
     id: usize,
     default_attributes: &'a HashMap<String, Vec<(Relation, Arith)>>,
+    layer_size: usize,
+    styles_to_id: &mut HashMap<&'a String, usize>,
 ) -> StyleNode<'a> {
     match root {
         Element::Tag { traits, children } => {
@@ -95,8 +103,10 @@ pub fn construct_style_tree<'a>(
                             stylesheet,
                             constraint_names,
                             property_names,
-                            id + 1 + i,
+                            i + layer_size,
                             default_attributes,
+                            children.len(),
+                            styles_to_id,
                         )
                     })
                     .collect(),
@@ -106,6 +116,8 @@ pub fn construct_style_tree<'a>(
                     constraint_names,
                     property_names,
                     default_attributes,
+                    id,
+                    styles_to_id,
                 ),
             };
         }
@@ -142,6 +154,7 @@ pub fn solve_constraints<'a>(
     root: &'a StyleNode,
     variable_pool: &mut HashMap<usize, HashMap<&String, Variable>>,
     solver: &mut Solver,
+    styles_to_id: &HashMap<&'a String, usize>,
 ) {
     let id = root.id;
     for (attr_name, terms) in &root.styles.constraints {
@@ -150,16 +163,21 @@ pub fn solve_constraints<'a>(
             let constraint_operator = relation_to_operator(rel);
             let new_constraint = match arith {
                 Arith::Num(n) => left_hand_variable | constraint_operator | *n as f64,
-                // Arith::Ref(entity, other_attr) => {
-                //     left_hand_variable
-                //         | constraint_operator
-                //         | match entity {
-                //             Entity::Other(other_style) => {
-                //                 retrieve_variable(variable_pool, id, &other_attr)
-                //             }
-                //             _ => panic!("STRANGE ENTITY"),
-                //         }
-                // }
+                Arith::Ref(e, other_attr_name) => {
+                    left_hand_variable
+                        | constraint_operator
+                        | match e {
+                            Entity::Other(other_style) => {
+                                println!("{:#?}", other_style);
+                                retrieve_variable(
+                                    variable_pool,
+                                    *styles_to_id.get(other_style).unwrap(),
+                                    &other_attr_name,
+                                )
+                            }
+                            _ => panic!("STRANGE ENTITY"),
+                        }
+                }
                 _ => panic!("Invalid Expression"),
             };
             println!("h{:#?}", new_constraint);
@@ -176,6 +194,6 @@ pub fn solve_constraints<'a>(
         }
     }
     for child in &root.children {
-        solve_constraints(child, variable_pool, solver);
+        solve_constraints(child, variable_pool, solver, styles_to_id);
     }
 }
