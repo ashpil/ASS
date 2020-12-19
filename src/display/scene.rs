@@ -97,33 +97,60 @@ impl Scene {
                     self.add_rect(
                         root.attrs
                             .constraints
-                            .get(&"x".to_string())
+                            .get(&"left".to_string())
                             .copied()
                             .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
-                            .get(&"y".to_string())
+                            .get(&"top".to_string())
                             .copied()
                             .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
-                            .get(&"width".to_string())
+                            .get(&"right".to_string())
                             .copied()
                             .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
-                            .get(&"height".to_string())
+                            .get(&"bottom".to_string())
                             .copied()
                             .unwrap_or_default() as f32,
                         root.attrs
-                            .constraints
+                            .properties
                             .get(&"color".to_string())
                             .copied()
                             .map_or(rgb_to_u32(100, 100, 200), |f| f as u32),
                     )
                 }
             }
-            Element::Text(_) => {}
+            Element::Text(text) => {
+                if !root.attrs.constraints.is_empty() {
+                    self.add_text(
+                        text,
+                        12.0,
+                        root.attrs
+                            .constraints
+                            .get(&"left".to_string())
+                            .copied()
+                            .unwrap_or_default() as f32,
+                        root.attrs
+                            .constraints
+                            .get(&"top".to_string())
+                            .copied()
+                            .unwrap_or_default() as f32,
+                        root.attrs
+                            .constraints
+                            .get(&"right".to_string())
+                            .copied()
+                            .unwrap_or_default() as f32,
+                        root.attrs
+                            .constraints
+                            .get(&"bottom".to_string())
+                            .copied()
+                            .unwrap_or_default() as f32,
+                    )
+                }
+            }
         }
         for child in &root.children {
             self.process_render_tree(child);

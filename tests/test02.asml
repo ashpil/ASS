@@ -1,27 +1,29 @@
 <style>
     box {
-        width = 20
-        height = 20
+        width = 200
+        height = 200
+        color = #123456
     }
 
     square {
         width = 100
         height = 50
         top = box[bottom]
-        color = #FFFFFF
+        color = #12F450
     }
     
-    ass {
+    l {
         width = box[width]
         height = square[height]
         right = square[left]
         top = square[bottom]
+        color = #123456
     }
     
     god {}
 </style>
 <body>
-    <box>Box 1</box>
-    <square></square>
-    <ass><god>a</god></ass>
+    <box>I LOVE CS4110</box>
+    <square>I LOVE CS3110 TOO!</square>
+    <l><god>LET'S GO</god></l>
 </body>

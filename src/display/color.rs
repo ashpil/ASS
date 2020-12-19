@@ -6,4 +6,3 @@ pub fn rgb_to_u32(red: usize, green: usize, blue: usize) -> u32 {
     let b = clamp(0, blue, 255);
     ((r << 16) | (g << 8) | b) as u32
 }
-

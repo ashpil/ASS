@@ -1,5 +1,6 @@
 use super::style_tree::{retrieve_variable, StyleNode};
 use crate::parser::asml_parser::Element;
+use crate::parser::ass_parser::{Arith, Entity, Relation, Style};
 use cassowary::{AddConstraintError, Constraint, Solver, Variable, WeightedRelation};
 use std::collections::HashMap;
 
@@ -14,7 +15,7 @@ pub struct RenderNode<'a> {
 #[derive(Debug, PartialEq)]
 pub struct RenderData<'a> {
     pub constraints: HashMap<&'a String, f64>,
-    pub properties: HashMap<&'a String, &'a String>,
+    pub properties: HashMap<&'a String, f64>,
 }
 
 pub fn generate_render_tree<'a>(
@@ -43,7 +44,18 @@ pub fn generate_render_tree<'a>(
                 .styles
                 .properties
                 .iter()
-                .map(|(attr_name, _)| (*attr_name, *attr_name))
+                .map(|(attr_name, attr_list)| {
+                    let mut v = 0.0;
+                    for (_, arith) in *attr_list {
+                        match arith {
+                            Arith::Num(n) => {
+                                v = *n as f64;
+                            }
+                            _ => panic!("Invalid Arith"),
+                        }
+                    }
+                    (*attr_name, v)
+                })
                 .collect(),
         },
     }

@@ -215,6 +215,23 @@ pub fn solve_constraints<'a>(
                 | retrieve_variable(variable_pool, pid, &"top".to_string()),
         ])
     }
+    match root.element {
+        Element::Text(_) => new_constraints.append(&mut vec![
+            retrieve_variable(variable_pool, id, &"left".to_string())
+                | WeightedRelation::EQ(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"left".to_string()),
+            retrieve_variable(variable_pool, id, &"right".to_string())
+                | WeightedRelation::EQ(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"right".to_string()),
+            retrieve_variable(variable_pool, id, &"bottom".to_string())
+                | WeightedRelation::EQ(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"bottom".to_string()),
+            retrieve_variable(variable_pool, id, &"top".to_string())
+                | WeightedRelation::EQ(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"top".to_string()),
+        ]),
+        _ => (),
+    }
 
     for (attr_name, terms) in &root.styles.constraints {
         for (rel, arith) in *terms {
