@@ -4,11 +4,16 @@ ASS is a WIP markup language, designed to fill a similar role as HTML/CSS do tod
 
 Head to [`/documents`](/documents) for more information.
 
+## Demo
+
+We have provided an example file with code and you simply need to run `cargo run test02.asml`
+in order to see the output. You can then experiment by writing some basic code yourself in the same or another file.
+
+Supported Inputs: left, right, top, bottom, color, width, height
+
 ## Install
 
 [Install Rust](https://www.rust-lang.org/tools/install), and Cargo will handle everything else for you. Just do `cargo run` from the directory.
-
-When the program is run, it will prompt you with a choice of either parsing the styling portion of the language or the markup portion of the language. Once you make your choice (either works), put in test.asml to parse an example of the markup langauge or test.ass for an example of the styling language. Note you could also try with your own program. The path to the input file is relative to the directory. The output will be an AST in the case of the markup language and a hashmap in the case of the styling language.
 
 **Note that just in case Rust is difficult to install, we also included a binary(ass) which can be run: `./ass`**
 

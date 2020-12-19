@@ -19,11 +19,9 @@
         top = square[bottom]
         color = #123456
     }
-    
-    god {}
 </style>
 <body>
     <box>I LOVE CS4110</box>
     <square>I LOVE CS3110 TOO!</square>
-    <l><god>LET'S GO</god></l>
+    <l>LET'S GO</l>
 </body>

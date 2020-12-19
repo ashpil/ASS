@@ -68,6 +68,7 @@ fn main() {
         window_width | EQ(REQUIRED) | 800.0,
         window_height | EQ(REQUIRED) | 600.0,
     ]);
+    
 
     let default_attributes = HashMap::new();
 
@@ -86,7 +87,7 @@ fn main() {
         &mut id_to_style_node,
     );
 
-    println!("{:#?}", styles_to_id);
+    // println!("{:#?}", styles_to_id);
 
     let mut variable_pool = HashMap::new();
 
@@ -98,7 +99,6 @@ fn main() {
     // print_changes(&variable_pool, &solver);
     let render_tree = generate_render_tree(&style_tree, &solver, &mut variable_pool);
     println!("{:#?}", render_tree);
-
     let mut window = Window::new(
         "ASS",
         500,
