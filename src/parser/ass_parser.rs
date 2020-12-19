@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::convert::TryInto;
 
 #[derive(Debug, PartialEq)]
 pub enum Entity {
@@ -15,6 +16,12 @@ pub enum Relation {
 }
 
 #[derive(Debug, PartialEq)]
+pub struct Alias {
+    from: String,
+    to: Vec<String>,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum Arith {
     Ref(Entity, String),
     Num(u32),
@@ -28,10 +35,17 @@ pub struct Style {
     pub attrs: HashMap<String, Vec<(Relation, Arith)>>,
 }
 
+#[derive(Debug, PartialEq)]
+pub enum StyleOrAlias {
+    OrStyle(Style),
+    OrAlias(Alias),
+}
+
 peg::parser! {
     pub grammar ass_parser() for str {
         use self::Arith::*;
         use self::Relation::*;
+        use self::StyleOrAlias::*;
 
         rule whitespace() = quiet!{ [c if c.is_whitespace()]+ }
 
@@ -40,6 +54,9 @@ peg::parser! {
 
         rule number() -> u32
             = n:$(['0'..='9']+) { n.parse().unwrap() }
+
+        rule hex() -> u32
+            = "#" n:$(['0'..='9' | 'A'..='F' | 'a'..='f']*<6>) { u32::from_str_radix(n, 16).unwrap() }
 
         rule relation() -> Relation
             = "=" { EQ } / "<=" { LE } / ">=" { GE }
@@ -52,15 +69,18 @@ peg::parser! {
         rule attribute() -> Arith
             = e:entity() "[" w:word() "]" { Ref(e, w) }
 
-        rule attr_or_num() -> Arith
-            = attribute() / n:number() { Num(n) }
+        rule attr_or_val() -> Arith
+            = attribute() / n:number() { Num(n) } / n:hex() { Num(n) }
+
+        pub rule alias() -> Alias 
+            = from:word() whitespace()* "=" whitespace()* to:word() ** " " { Alias { from, to } }
 
         rule arith() -> Arith
-            = p1:attribute() whitespace()* "-" whitespace()* p2:attr_or_num() { Sub(Box::new(p1), Box::new(p2)) }
-            / p1:attribute() whitespace()* "+" whitespace()* p2:attr_or_num() { Add(Box::new(p1), Box::new(p2)) }
+            = p1:attribute() whitespace()* "-" whitespace()* p2:attr_or_val() { Sub(Box::new(p1), Box::new(p2)) }
+            / p1:attribute() whitespace()* "+" whitespace()* p2:attr_or_val() { Add(Box::new(p1), Box::new(p2)) }
             / p:attribute() whitespace()* "-" whitespace()* a:arith() { Sub(Box::new(p), Box::new(a)) }
             / p:attribute() whitespace()* "+" whitespace()* a:arith() { Sub(Box::new(p), Box::new(a)) }
-            / attr_or_num()
+            / attr_or_val()
 
         rule constraint() -> (Relation, Arith)
             = whitespace()* r:relation() whitespace()* a:arith() { (r, a) }
@@ -68,11 +88,22 @@ peg::parser! {
         rule spec() -> (String, Vec<(Relation, Arith)>)
             = attr:word() c:constraint() ** ", else" { (attr, c) }
 
-        rule style() -> Style
-            = name:word() whitespace()* "{" whitespace()* attr:spec() ** whitespace() whitespace()* "}" { Style { name, attrs: attr.into_iter().collect::<HashMap<String, Vec<(Relation, Arith)>>>() } }
+        rule style_or_alias() -> StyleOrAlias
+            = name:word() whitespace()* "{" whitespace()* attr:spec() ** whitespace() whitespace()* "}" { OrStyle(Style { name, attrs: attr.into_iter().collect::<HashMap<String, Vec<(Relation, Arith)>>>() }) }
+            / a:alias() { OrAlias(a) }
 
         pub rule stylesheet() -> Vec<Style>
-            = whitespace()* s:style() ** (whitespace()*) { s }
+            = whitespace()* s:style_or_alias() ** (whitespace()*) {
+                let mut styles = Vec::new();
+                let mut aliases = Vec::new();
+                for st in s {
+                    match st {
+                        OrAlias(a) => aliases.push(a),
+                        OrStyle(s) => styles.push(s),
+                    }
+                }
+                styles
+            }
     }
 }
 

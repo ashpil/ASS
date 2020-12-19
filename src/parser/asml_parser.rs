@@ -1,5 +1,3 @@
-use std::hash::{Hash, Hasher};
-
 #[derive(Debug, PartialEq)]
 pub struct Trait {
     pub name: String,

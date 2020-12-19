@@ -5,15 +5,16 @@ use cassowary::{AddConstraintError, Constraint, Solver, Variable, WeightedRelati
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct StyleGroups<'a> {
     pub constraints: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
     pub properties: Vec<(&'a String, &'a Vec<(Relation, Arith)>)>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct StyleNode<'a> {
     pub id: usize,
+    pub pid: usize,
     pub element: &'a Element,
     pub children: Vec<StyleNode<'a>>,
     pub styles: StyleGroups<'a>,
@@ -37,7 +38,7 @@ pub fn retrieve_variable(
             Some(var) => *var,
             None => panic!("Attribute Name {} Not Mapped in Variable Pool", attr_name),
         },
-        None => panic!("Style Name Not Mapped in Variable Pool"),
+        None => panic!("{} ID Not Mapped in Variable Pool", node_id),
     }
 }
 
@@ -83,30 +84,36 @@ pub fn construct_style_tree<'a>(
     stylesheet: &'a Vec<Style>,
     constraint_names: &'a HashSet<String>,
     property_names: &'a HashSet<String>,
-    id: usize,
+    parent_id: usize,
+    id: &mut usize,
     default_attributes: &'a HashMap<String, Vec<(Relation, Arith)>>,
-    layer_size: usize,
     styles_to_id: &mut HashMap<&'a String, usize>,
+    id_to_style_node: &mut HashMap<usize, StyleNode<'a>>,
 ) -> StyleNode<'a> {
-    match root {
-        Element::Tag { traits, children } => {
-            // Loop through traits
-            return StyleNode {
-                id: id,
+    *id += 1;
+    let old_id = *id;
+    let new_node = match root {
+        Element::Tag { traits, children } =>
+        // Loop through traits
+        {
+            StyleNode {
+                id: *id,
+                pid: parent_id,
                 element: root,
                 children: children
                     .iter()
                     .enumerate()
-                    .map(|(i, child)| {
+                    .map(|(_, child)| {
                         construct_style_tree(
                             child,
                             stylesheet,
                             constraint_names,
                             property_names,
-                            i + layer_size,
+                            old_id,
+                            id,
                             default_attributes,
-                            children.len(),
                             styles_to_id,
+                            id_to_style_node,
                         )
                     })
                     .collect(),
@@ -116,21 +123,30 @@ pub fn construct_style_tree<'a>(
                     constraint_names,
                     property_names,
                     default_attributes,
-                    id,
+                    old_id,
                     styles_to_id,
                 ),
-            };
+            }
         }
-        Element::Text(_) => StyleNode {
-            id: id + 1,
-            element: root,
-            children: vec![],
-            styles: StyleGroups {
-                constraints: vec![],
-                properties: vec![],
-            },
-        },
-    }
+        Element::Text(_) => {
+            let mut constraints = vec![];
+            for attr in default_attributes {
+                constraints.push(attr);
+            }
+            StyleNode {
+                id: *id,
+                pid: parent_id,
+                element: root,
+                children: vec![],
+                styles: StyleGroups {
+                    constraints: constraints,
+                    properties: vec![],
+                },
+            }
+        }
+    };
+    id_to_style_node.insert(new_node.id, new_node.clone());
+    return new_node;
 }
 
 pub fn generate_variable_pool<'a>(
@@ -144,6 +160,13 @@ pub fn generate_variable_pool<'a>(
     for (attr_name, _) in &root.styles.constraints {
         attr_to_variable.insert(*attr_name, Variable::new());
     }
+
+    for constraint_name in constraint_names {
+        if !attr_to_variable.contains_key(constraint_name) {
+            attr_to_variable.insert(constraint_name, Variable::new());
+        }
+    }
+
     variable_pool.insert(id, attr_to_variable);
     for child in &root.children {
         generate_variable_pool(child, stylesheet, constraint_names, variable_pool);
@@ -157,42 +180,123 @@ pub fn solve_constraints<'a>(
     styles_to_id: &HashMap<&'a String, usize>,
 ) {
     let id = root.id;
+    let pid = root.pid;
+
+    let mut new_constraints = vec![];
+
+    new_constraints.append(&mut vec![
+        retrieve_variable(variable_pool, id, &"left".to_string())
+            | WeightedRelation::LE(REQUIRED)
+            | retrieve_variable(variable_pool, id, &"right".to_string()),
+        retrieve_variable(variable_pool, id, &"top".to_string())
+            | WeightedRelation::LE(REQUIRED)
+            | retrieve_variable(variable_pool, id, &"bottom".to_string()),
+        retrieve_variable(variable_pool, id, &"top".to_string())
+            | WeightedRelation::GE(REQUIRED)
+            | 0.0,
+        retrieve_variable(variable_pool, id, &"left".to_string())
+            | WeightedRelation::GE(REQUIRED)
+            | 0.0,
+    ]);
+
+    if pid != 0 {
+        new_constraints.append(&mut vec![
+            retrieve_variable(variable_pool, id, &"left".to_string())
+                | WeightedRelation::GE(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"left".to_string()),
+            retrieve_variable(variable_pool, id, &"right".to_string())
+                | WeightedRelation::LE(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"right".to_string()),
+            retrieve_variable(variable_pool, id, &"bottom".to_string())
+                | WeightedRelation::LE(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"bottom".to_string()),
+            retrieve_variable(variable_pool, id, &"top".to_string())
+                | WeightedRelation::GE(REQUIRED)
+                | retrieve_variable(variable_pool, pid, &"top".to_string()),
+        ])
+    }
+
     for (attr_name, terms) in &root.styles.constraints {
         for (rel, arith) in *terms {
             let left_hand_variable = retrieve_variable(variable_pool, id, attr_name);
-            let constraint_operator = relation_to_operator(rel);
-            let new_constraint = match arith {
-                Arith::Num(n) => left_hand_variable | constraint_operator | *n as f64,
-                Arith::Ref(e, other_attr_name) => {
-                    left_hand_variable
-                        | constraint_operator
-                        | match e {
-                            Entity::Other(other_style) => {
-                                println!("{:#?}", other_style);
-                                retrieve_variable(
-                                    variable_pool,
-                                    *styles_to_id.get(other_style).unwrap(),
-                                    &other_attr_name,
-                                )
-                            }
-                            _ => panic!("STRANGE ENTITY"),
-                        }
-                }
-                _ => panic!("Invalid Expression"),
-            };
-            println!("h{:#?}", new_constraint);
-            match solver.add_constraint(new_constraint) {
-                Ok(_) => println!("Constraint Added"),
-                Err(e) => match e {
-                    AddConstraintError::DuplicateConstraint => println!("Duplicate Constraint"),
-                    AddConstraintError::UnsatisfiableConstraint => {
-                        println!("Unsatisfiable Constraint")
+            let constraint_operator = relation_to_operator(&rel);
+            match arith {
+                Arith::Num(n) => {
+                    if *attr_name == "width" {
+                        new_constraints.push(
+                            retrieve_variable(variable_pool, id, &"right".to_string())
+                                - retrieve_variable(variable_pool, id, &"left".to_string())
+                                | WeightedRelation::EQ(REQUIRED)
+                                | *n as f64,
+                        );
+                    } else if *attr_name == "height" {
+                        new_constraints.push(
+                            retrieve_variable(variable_pool, id, &"bottom".to_string())
+                                - retrieve_variable(variable_pool, id, &"top".to_string())
+                                | WeightedRelation::EQ(REQUIRED)
+                                | *n as f64,
+                        );
+                    } else {
+                        new_constraints.push(left_hand_variable | constraint_operator | *n as f64)
                     }
-                    AddConstraintError::InternalSolverError(s) => println!("{}", s),
+                }
+                Arith::Ref(e, other_attr_name) => match e {
+                    Entity::Other(other_style) => {
+                        let target_id = *styles_to_id.get(&other_style).unwrap();
+                        if other_attr_name == "height" {
+                            new_constraints.push(
+                                retrieve_variable(variable_pool, id, &"bottom".to_string())
+                                    - retrieve_variable(variable_pool, id, &"top".to_string())
+                                    | WeightedRelation::EQ(STRONG)
+                                    | retrieve_variable(
+                                        variable_pool,
+                                        target_id,
+                                        &"bottom".to_string(),
+                                    ) - retrieve_variable(
+                                        variable_pool,
+                                        target_id,
+                                        &"top".to_string(),
+                                    ),
+                            )
+                        } else if other_attr_name == "width" {
+                            new_constraints.push(
+                                retrieve_variable(variable_pool, id, &"right".to_string())
+                                    - retrieve_variable(variable_pool, id, &"left".to_string())
+                                    | WeightedRelation::EQ(STRONG)
+                                    | retrieve_variable(
+                                        variable_pool,
+                                        target_id,
+                                        &"right".to_string(),
+                                    ) - retrieve_variable(
+                                        variable_pool,
+                                        target_id,
+                                        &"left".to_string(),
+                                    ),
+                            )
+                        } else {
+                            new_constraints.push(
+                                left_hand_variable
+                                    | constraint_operator
+                                    | retrieve_variable(variable_pool, target_id, &other_attr_name),
+                            );
+                        }
+                    }
+                    _ => panic!("STRANGE ENTITY"),
                 },
+                _ => panic!("Invalid Expression"),
             }
         }
     }
+
+    match solver.add_constraints(&new_constraints) {
+        Ok(_) => println!("Constraint Added"),
+        Err(e) => match e {
+            AddConstraintError::DuplicateConstraint => println!("Duplicate Constraint"),
+            AddConstraintError::UnsatisfiableConstraint => println!("Unsatisfiable Constraint"),
+            AddConstraintError::InternalSolverError(s) => println!("{}", s),
+        },
+    }
+
     for child in &root.children {
         solve_constraints(child, variable_pool, solver, styles_to_id);
     }

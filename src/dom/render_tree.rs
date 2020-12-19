@@ -20,7 +20,7 @@ pub struct RenderData<'a> {
 pub fn generate_render_tree<'a>(
     root: &'a StyleNode,
     solver: &Solver,
-    variable_pool: &mut HashMap<usize, HashMap<&String, Variable>>,
+    variable_pool: &mut HashMap<usize, HashMap<&'a String, Variable>>,
 ) -> RenderNode<'a> {
     RenderNode {
         id: root.id,
@@ -33,16 +33,11 @@ pub fn generate_render_tree<'a>(
             })
             .collect(), // ::Vec<RenderNode>(),
         attrs: RenderData {
-            constraints: root
-                .styles
-                .constraints
+            constraints: variable_pool
+                .get(&root.id)
+                .unwrap()
                 .iter()
-                .map(|(attr_name, _)| {
-                    (
-                        *attr_name,
-                        solver.get_value(retrieve_variable(variable_pool, root.id, attr_name)),
-                    )
-                })
+                .map(|(attr_name, var)| (*attr_name, solver.get_value(*var)))
                 .collect(),
             properties: root
                 .styles

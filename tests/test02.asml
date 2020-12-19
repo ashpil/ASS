@@ -2,26 +2,26 @@
     box {
         width = 20
         height = 20
-        x = 20
-        y = 20
     }
 
     square {
-        width = 50
+        width = 100
         height = 50
-        x = 40
-        y = 40
+        top = box[bottom]
+        color = #FFFFFF
     }
     
     ass {
         width = box[width]
         height = square[height]
-        x = 120
-        y = 300
+        right = square[left]
+        top = square[bottom]
     }
+    
+    god {}
 </style>
 <body>
     <box>Box 1</box>
     <square></square>
-    <ass></ass>
+    <ass><god>a</god></ass>
 </body>
