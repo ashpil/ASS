@@ -43,13 +43,21 @@ impl Scene {
         }
     }
 
-    pub fn add_text(&mut self, content: &str, px: f32, x: f32, y: f32, width: f32, height: f32) {
+    pub fn add_text(
+        &mut self,
+        content: &str,
+        px: f32,
+        left: f32,
+        top: f32,
+        right: f32,
+        bottom: f32,
+    ) {
         let mut layout = Layout::new(CoordinateSystem::PositiveYDown);
         layout.reset(&LayoutSettings {
-            x,
-            y,
-            max_width: Some(width),
-            max_height: Some(height),
+            x: left,
+            y: top,
+            max_width: Some(right - left),
+            max_height: Some(bottom - top),
             ..LayoutSettings::default()
         });
         layout.append(&[&self.font], &TextStyle::new(&content, px, 0));
@@ -68,10 +76,11 @@ impl Scene {
         }
     }
 
-    pub fn add_rect(&mut self, x: usize, y: usize, width: usize, height: usize, color: u32) {
-        for line in y..=y + height {
-            for pixel in
-                self.buffer[(line * self.width + x)..=(line * self.width + x + width)].iter_mut()
+    pub fn add_rect(&mut self, left: f32, top: f32, right: f32, bottom: f32, color: u32) {
+        for line in (top as usize)..=(bottom as usize) {
+            for pixel in self.buffer
+                [(line * self.width + left as usize)..=(line * self.width + right as usize)]
+                .iter_mut()
             {
                 *pixel = color;
             }
@@ -90,22 +99,22 @@ impl Scene {
                             .constraints
                             .get(&"x".to_string())
                             .copied()
-                            .unwrap_or_default() as usize,
+                            .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
                             .get(&"y".to_string())
                             .copied()
-                            .unwrap_or_default() as usize,
+                            .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
                             .get(&"width".to_string())
                             .copied()
-                            .unwrap_or_default() as usize,
+                            .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
                             .get(&"height".to_string())
                             .copied()
-                            .unwrap_or_default() as usize,
+                            .unwrap_or_default() as f32,
                         root.attrs
                             .constraints
                             .get(&"color".to_string())
